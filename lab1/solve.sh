@@ -30,8 +30,6 @@ input_matrix() {
         fi
     done
 
-    echo -e "${A[0,0]}, ${A[0,1]} \n${A[1,0]}, ${A[1,1]}"
-
     echo "Введите вектор B: "
     read -p "Вектор B: " string
     j=0
@@ -88,12 +86,14 @@ print_matrix() {
     done
 }
 
+transposition=0
+
 gauss_elimination() {
     for ((k = 0; k < n - 1; k++)); do
         max_row=$k
         max_val=${A[$k,$k]}
         for ((i = k + 1; i < n; i++)); do
-            if (( $(echo "${A[$i,$k]} > $max_val" | bc -l) )); then
+            if (( $(echo "${A[$i,$k]}^2 > $max_val^2" | bc -l) )); then
                 max_row=$i
                 max_val=${A[$i,$k]}
             fi
@@ -107,6 +107,7 @@ gauss_elimination() {
             temp=${B[$k]}
             B[$k]=${B[$max_row]}
             B[$max_row]=$temp
+            (( transposition++ ))
         fi
         if (( $(echo "${A[$k,$k]} == 0" | bc -l) )); then
             error_message "Матрица вырождена. Решение невозможно."
@@ -118,6 +119,8 @@ gauss_elimination() {
             done
             B[$i]=$(echo "scale=10; ${B[$i]} - $factor * ${B[$k]}" | bc -l)
         done
+        echo "Матрица после $k итерации"
+        print_matrix
     done
 }
 
@@ -150,7 +153,7 @@ calculate_residuals() {
         for ((j = 0; j < n; j++)); do
             residual=$(echo "scale=10; $residual - ${A[$i,$j]} * ${X[$j]}" | bc -l)
         done
-        printf "R[%d] = %8.4f\n" $i $residual
+        printf "R[%d] = %8.10f\n" $i $residual
     done
 }
 
@@ -213,6 +216,8 @@ check_system() {
             echo -e "\e[1;32m ( ^.^ ) \e[0m"
             echo -e "\e[1;32m  > ^ <  \e[0m"
             echo -e "\e[1;32m Система имеет единственное решение! \e[0m"
+        # elif (( $(echo "$rank_A < $n" | bc -l) )); then
+        #     error_message "Система имеет бесконечно много решений."
         else
             error_message "Система имеет бесконечно много решений."
         fi
@@ -264,6 +269,7 @@ check_system
 
 if (( $(echo "$rank_A == $rank_augmented" | bc -l) )); then
     gauss_elimination
+    echo "Количество перестановок: $transposition"
     echo "Треугольная матрица:"
     print_matrix
     calculate_determinant
