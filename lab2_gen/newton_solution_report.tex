@@ -1,0 +1,56 @@
+
+\documentclass{article}
+\usepackage{amsmath}
+\begin{document}
+
+\section*{Решение системы нелинейных уравнений методом Ньютона}
+
+Дана система уравнений:
+\[
+\begin{cases}
+\tan(xy) = x^2 \\
+0.8x^2 + 2y^2 = 1
+\end{cases}
+\]
+
+\subsection*{Метод Ньютона}
+
+Метод Ньютона заключается в итерационном уточнении решения с использованием якобиана системы. Якобиан системы:
+\[
+J(x, y) = \begin{pmatrix}
+\frac{\partial f_1}{\partial x} & \frac{\partial f_1}{\partial y} \\
+\frac{\partial f_2}{\partial x} & \frac{\partial f_2}{\partial y}
+\end{pmatrix}
+\]
+где
+\[
+\frac{\partial f_1}{\partial x} = y \cdot \sec^2(xy) - 2x, \quad
+\frac{\partial f_1}{\partial y} = x \cdot \sec^2(xy)
+\]
+\[
+\frac{\partial f_2}{\partial x} = 1.6x, \quad
+\frac{\partial f_2}{\partial y} = 4y
+\]
+
+\subsection*{Итерации}
+
+\begin{tabular}{|c|c|c|c|}
+\hline
+Итерация & \(x_n\) & \(y_n\) & Норма невязки \\
+\hline
+0 & 0.500000 & 0.500000 & 0.300048 \\
+1 & 0.625260 & 0.599896 & 0.032629 \\
+2 & 0.617105 & 0.589748 & 0.000273 \\
+3 & 0.617113 & 0.589634 & 0.000000 \\
+
+\hline
+\end{tabular}
+
+\subsection*{Результат}
+
+После нескольких итераций метод Ньютона сходится к решению:
+\[
+x \approx 0.617113, \quad y \approx 0.589634
+\]
+
+\end{document}
